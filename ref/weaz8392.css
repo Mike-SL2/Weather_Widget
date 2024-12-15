@@ -1,0 +1,59 @@
+﻿*::selection{background-color:transparent;}
+body{padding:0;margin:1px;;}
+.main{
+	margin: 8px; padding:10px;
+		display:inline-block;
+	box-shadow:0px 0px 3px 5px ghostwhite;
+}
+.controlPanel{
+	display:flex;flex-flow:row wrap;
+}
+.dataTablo{border:1px solid red; display:flex;width:200px;justify-content:center;align-items:center;
+	   font-size: 16px;font-weight:600;}
+input {
+	border:none;
+        background-image:none;
+        background-color:transparent;
+        -webkit-box-shadow: none;
+        -moz-box-shadow: none;
+        box-shadow: none;
+     }     
+.searchTown {
+        border-bottom: 1px solid;
+        padding: 5px;
+        font-size: 20px;
+        margin:0px 0px 0px 10px;
+        vertical-align: center;
+     }
+.searchTown::selection{background-color:blue;color:white;}
+.searchTown,.searchTownBtn,.btnGeo{width:260px; outline: none;}
+
+.searchTownBtn,.btnGeo,.dataTablo{height:35px;margin:10px 5px 0px 10px;box-shadow:3px 3px 1px 1px lavender;
+font-family:Arial;}
+.searchTownBtn,.btnGeo{	
+	background-color:aqua;font-size: 20px; cursor:pointer;
+	border:1px solid green;border-width:0px 1px 1px 0px;
+	padding: 3px 10px 3px 10px;		
+}.btnActive:active{background-color:red;color:white;box-shadow:0px 0px 1px 1px lavender;}
+
+.decodedData{display:flex;width:1050px;justify-content:space-between;flex-flow:row wrap; } 
+  .decodedData > div{width:140px;height:90px;margin:10px 0px 0px 0px;border-radius:20px;}
+
+   .weatherIcon{background-position: center;background-repeat: no-repeat;background-size:110% contain;border:1px solid green; }
+   .decodedData > div > div{width:100%;display:flex;align-items:center;justify-content:center;
+			    padding:0; flex-shrink:0;
+			    cursor:default;
+			    border:2px solid red;border-radius:inherit;background-color:aquamarine;font-size:16px;}
+     .decodedData > div > div:first-child {height:35%;border-color:red; border-bottom-left-radius:0px;border-bottom-right-radius:0px;}
+     .decodedData > div > div:last-child  {height:64%;border-color:blue; border-top-width:0px;
+			border-top-left-radius:0px;border-top-right-radius:0px;}
+
+@media (max-width: 1090px) { 
+	.main{width:94vw;box-shadow:0px 0px 3px 3px ghostwhite;}
+	.decodedData {width:100%;justify-content:flex-start;gap:10px;}
+}
+@media (max-width: 330px) { 
+	.main{width:330px;}
+
+}
+

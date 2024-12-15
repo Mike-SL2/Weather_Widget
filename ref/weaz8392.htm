@@ -1,0 +1,140 @@
+﻿<!DOCTYPE HTML><html lang="ru"><head>	
+				<meta charset="UTF-8">	
+<link rel="icon" type="image/png" sizes="64x64" href="./ico/headico.gif">
+<link rel="stylesheet" href="weaz8392.css">	  			
+<title>Weather report</title>      </head>
+<body>
+<div class="main">
+   <div class="controlPanel"> 
+	
+	   <button class="btnGeo btnActive" title="Get geo-location data">Search by GEOPosition</button> 
+	   <div class="dataTablo" title="Application current status">Not ready</div>
+	
+	<div>
+	   <input class="searchTown" placeholder="Enter City Name Here" name="searchTown">	</input> 
+	   <button class="searchTownBtn btnActive" title="Get weather by town">Search by Town Name</button> 
+	</div>
+   </div>	
+   <div class="decodedData">
+	<div class="pBox weatherIcon" title="weather condition icon">	</div>								
+	<div class="pBox"> <div> </div> <div> </div>		</div>								
+	<div class="pBox"> <div> </div> <div> </div>		</div>								
+	<div class="pBox"> <div> </div> <div> </div>		</div>								
+	<div class="pBox"> <div> </div> <div> </div>		</div>								
+	<div class="pBox"> <div> </div> <div> </div>		</div>								
+	<div class="pBox"> <div> </div> <div> </div>		</div>
+   </div>
+
+</div>
+<script src="geoget.js">
+	/* 	geo position request procedure */
+	/* getGeoData (<callback function Name1>,[<number of request attempts (default=3)>],[<true - emulation>]) */
+	/* returns an object of type : {lat:55.337948, lon:86.145195} or {lat:null, lon:null} if GPS is unavailable */
+	/* Example:	getGeoData(<callback function Name1>)	*/
+</script>
+<script src="wthrep.js">
+	/*   	weather report aqcuisition   */
+	/* weatherReport(<callback function Name2>,<geoData from "geo position request procedure">,[<true - emulation>]) */
+	/* returns an object to <callback function2>  */
+	/* Example:	getGeoData((geoData)=>{weatherReport(<callback function Name2>,geoData)})	*/
+</script>
+<script src="towngeo.js">
+	/* 	defines geo position by town name */
+	/* townGeoData (<callback function Name3>,<townName>,[<true - emulation>]) */
+	/* returns an object of type : {lat:55.337948, lon:86.145195}    */
+	/* or 								 */
+	/* {lat:null, lon:null} if no network or no <townName> specified */
+	/* Example1:	townGeoData(<callback function Name3>,'London')	 */
+	/* Example2:	townGeoData((geoData)=>{weatherReport(<callback function Name2>,geoData)},'London')	 */
+</script>
+<script src="wrepfltr.js">
+	/* weather report data filter-converter */
+	/*	wRepDataFilter(<weather report data object>,[<callback function for output>],<custom names/order parameters Array>); */
+</script>
+<script>
+'use strict';
+const weaz8392_module = function () {
+const	doc = document,	emulation = false,	
+
+dataDisplay2 = (data) =>{
+	let iconSRC ='';
+	const weatherIcon= doc.querySelector('.weatherIcon'), moduleName =`dataDisplay2: `,
+	      iconSRCPrefix=`https://openweathermap.org/img/wn/`,
+	      probePic = doc.createElement('img'),
+	pBox = doc.querySelectorAll('.pBox'),
+noVerbose = false,				
+      	msgSvr=(msg,type=false)=>{
+      		if (noVerbose) {return;}
+      		if (type) {console.error(msg);} else {console.log(msg);}
+	};
+
+pBox.forEach((i,n)=>{	
+		for (let pHeaderText in data[n]) {
+		  if (n){
+		     i.children[0].style.backgroundColor = 'aqua';
+		     i.children[0].innerHTML=pHeaderText;	i.children[1].innerHTML=data[n][pHeaderText];
+		     i.children[0].title=pHeaderText;	  	i.children[1].title=data[n][pHeaderText];	
+		  } else {
+			if (data[n][pHeaderText].match(/n/)){i.style.backgroundColor = 'royalblue';
+			} else {i.style.backgroundColor = 'wheat';}
+			
+			iconSRC=`${iconSRCPrefix}${data[n][pHeaderText]}@2x.png`;			 
+		     probePic.addEventListener("error", () => {
+				const wCondIco = ` weather condition icon from `;
+				msgSvr(`${moduleName}error loading${wCondIco}${iconSRC}`,true);
+				iconSRC=`./ico/${data[n][pHeaderText]}.gif`;
+				msgSvr(`${moduleName}loading local${wCondIco}${iconSRC}`);
+				weatherIcon.style.backgroundImage=`url(${iconSRC})`;
+		     });    
+		     		probePic.src=iconSRC;			
+			weatherIcon.style.backgroundImage=`url(${iconSRC})`;
+		  };
+		};
+});
+},
+getWeather = function (){
+const searchTownInput = doc.querySelector('.searchTown'), 		
+	searchTownBtn = doc.querySelector('.searchTownBtn'),	
+	
+dataTabloAnnRequest = (text) =>{
+const dataTablo = doc.querySelector('.dataTablo'), emul = 'Emulat';
+   if (emulation) {dataTablo.innerHTML=emul+'ion mode';		return;}
+   if (text==='893q78q') {dataTablo.innerHTML='READY AG';	return;}
+	if (text) {		
+		if (!text.match(/°/)){
+			text =`Request ${text.slice(0,7)}...`;}
+		dataTablo.innerHTML=text;
+	} else {setTimeout(()=>{dataTablo.innerHTML=emul+'ed data';},1000);}
+},
+weatherReportDisplay = (GPSCoordinates) =>{
+/* data tablo */
+	const 	s=100;	let d1 = GPSCoordinates.lat, d2 = GPSCoordinates.lon;
+	if (d1!==null) {d1 = Math.trunc(d1*s)/s;d2 = Math.trunc(d2*s)/s;
+		        dataTabloAnnRequest(`${d1} °N&nbsp;&nbsp;&nbsp;${d2} °E `);}
+	else {dataTabloAnnRequest();}
+/* dataDisplay2 */
+	weatherReport((weatherData)=>{wRepDataFilter(weatherData,dataDisplay2)},GPSCoordinates,emulation);
+},
+	btnGeo = doc.querySelector('.btnGeo'),
+launchSearchByGeo = () =>{
+        dataTabloAnnRequest('GPS');		
+/* geoData Acquisition */
+	getGeoData((geoData)=>{ 
+				weatherReportDisplay(geoData);},2,emulation);
+};	btnGeo.addEventListener('click',launchSearchByGeo);
+
+const launchSearchByTown = () =>{
+	const townName = searchTownInput.value, inputStyle = searchTownInput.style;
+	if (townName){	  
+	  dataTabloAnnRequest(townName);	
+	  townGeoData((geoData)=>{weatherReportDisplay(geoData);},townName,emulation);
+
+     	  searchTownInput.value='';	   
+     } else {inputStyle.backgroundColor='pink';setTimeout(()=>{inputStyle.backgroundColor='';},500);}
+};
+searchTownBtn.addEventListener('click',launchSearchByTown);
+searchTownInput.addEventListener('keydown',(e)=>{if (e.key==='Enter') {launchSearchByTown();}});
+setTimeout(()=>{dataTabloAnnRequest('893q78q');},500);
+}();
+}();	
+</script></body></html>
