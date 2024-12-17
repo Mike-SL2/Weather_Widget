@@ -16,13 +16,6 @@
 	</div>
    </div>	
    <div class="decodedData">
-	<div class="pBox weatherIcon" title="weather condition icon">	</div>								
-	<div class="pBox"> <div> </div> <div> </div>		</div>								
-	<div class="pBox"> <div> </div> <div> </div>		</div>								
-	<div class="pBox"> <div> </div> <div> </div>		</div>								
-	<div class="pBox"> <div> </div> <div> </div>		</div>								
-	<div class="pBox"> <div> </div> <div> </div>		</div>								
-	<div class="pBox"> <div> </div> <div> </div>		</div>
    </div>
 
 </div>
@@ -58,39 +51,50 @@ const	doc = document,	emulation = false,
 
 dataDisplay2 = (data) =>{
 	let iconSRC ='';
-	const weatherIcon= doc.querySelector('.weatherIcon'), moduleName =`dataDisplay2: `,
+	const moduleName =`dataDisplay2: `,
 	      iconSRCPrefix=`https://openweathermap.org/img/wn/`,
 	      probePic = doc.createElement('img'),
-	pBox = doc.querySelectorAll('.pBox'),
+	      decodedData = doc.querySelector('.decodedData'),
+	wCon = {"01":"Ясно","02":"Небольшая облачность",
+		"03":"Рассеянные облака","04":"Рваная облачность",
+		"09":"Ливень","10":"Дождь","11":"Гроза","13":"Снег","50":"Туман"},
 noVerbose = false,				
       	msgSvr=(msg,type=false)=>{
       		if (noVerbose) {return;}
       		if (type) {console.error(msg);} else {console.log(msg);}
 	};
-
-pBox.forEach((i,n)=>{	
-		for (let pHeaderText in data[n]) {
+let pBox, weatherIconBox, wConTit;
+decodedData.innerHTML='';
+data.forEach((dataI,n)=>{
+	for (let pHeaderText in dataI) {
+	     pBox = doc.createElement('div');
 		  if (n){
-		     i.children[0].style.backgroundColor = 'aqua';
-		     i.children[0].innerHTML=pHeaderText;	i.children[1].innerHTML=data[n][pHeaderText];
-		     i.children[0].title=pHeaderText;	  	i.children[1].title=data[n][pHeaderText];	
-		  } else {
-			if (data[n][pHeaderText].match(/n/)){i.style.backgroundColor = 'royalblue';
-			} else {i.style.backgroundColor = 'wheat';}
-			
-			iconSRC=`${iconSRCPrefix}${data[n][pHeaderText]}@2x.png`;			 
-		     probePic.addEventListener("error", () => {
+ 			pBox.className="pBox";
+			pBox.innerHTML= `<div>${pHeaderText}</div> 
+					 <div>${dataI[pHeaderText]}</div>`;	
+			pBox.children[0].title=	pHeaderText;   pBox.children[1].title=	dataI[pHeaderText]; 	
+		  } else {			
+ 			pBox.className="pBox weatherIcon";			
+	/*	weather condition Icon	    */
+		wConTit=wCon[dataI[pHeaderText].match(/[^n^d]+/)[0]];
+			if (dataI[pHeaderText].match(/n/)) {wConTit = wConTit+', ночь';pBox.style.backgroundColor = 'royalblue';} 
+			if (dataI[pHeaderText].match(/d/)) {wConTit = wConTit+', день';pBox.style.backgroundColor = 'wheat';} 
+		if (wConTit) {pBox.title=wConTit;} else {pBox.title="no match description in base";}
+
+	weatherIconBox = pBox;
+			iconSRC=`${iconSRCPrefix}${dataI[pHeaderText]}@2x.png`;
+	probePic.addEventListener("error", () => {
 				const wCondIco = ` weather condition icon from `;
 				msgSvr(`${moduleName}error loading${wCondIco}${iconSRC}`,true);
-				iconSRC=`./ico/${data[n][pHeaderText]}.gif`;
+				iconSRC=`./ico/${dataI[pHeaderText]}.gif`;
 				msgSvr(`${moduleName}loading local${wCondIco}${iconSRC}`);
-				weatherIcon.style.backgroundImage=`url(${iconSRC})`;
-		     });    
-		     		probePic.src=iconSRC;			
-			weatherIcon.style.backgroundImage=`url(${iconSRC})`;
+	weatherIconBox.style.backgroundImage=`url(${iconSRC})`;
+	});   probePic.src=iconSRC;	
+	weatherIconBox.style.backgroundImage=`url(${iconSRC})`;
 		  };
-		};
-});
+	     decodedData.appendChild(pBox);
+		};	
+});			
 },
 getWeather = function (){
 const searchTownInput = doc.querySelector('.searchTown'), 		

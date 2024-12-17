@@ -59,6 +59,16 @@ noVerbose = false,
 	};
 if (!data) {data=dataEmu;}	if (!custArr) {custArr=custArrEmu;}
 
+// townName (from input weather report data.town) insert into custArr
+if (data.town) {
+	let namePos=null;
+	custArr.forEach((i,n)=>{
+		for (let key in i) {if (key==='name') {namePos=n;}}
+	});
+	if (namePos!==null) {custArr[namePos]={"town":"Город"};}
+}; 
+
+
 //Translating parameter''s names function declaration...
 const wNamesTranslate = (customNamesArray,srcDatObj) =>{
 

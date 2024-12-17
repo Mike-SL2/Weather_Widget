@@ -23,7 +23,7 @@ fetch(requestLine)
 				msgSvr(`${modulName}townGeoData load success.`);
 				msgSvr(`Country: ${data[0].country}`);			
 				msgSvr(`Town: ${data[0].name}, lat:${data[0].lat}, lon:${data[0].lon}`);
-				callBackFunction3({lat:data[0].lat, lon:data[0].lon});
+				callBackFunction3({lat:data[0].lat, lon:data[0].lon, town:data[0].name});
 			} else {
 				msgSvr(`${modulName}townGeoData load fail.(For city name: "${cityName}")`,true);
 				msgSvr(data);

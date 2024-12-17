@@ -5,8 +5,8 @@ const noVerbose = false,			modulName = `getGeoData: `,
       msgSvr=(msg,type=false)=>{
       		if (noVerbose) {return;}
       		if (type) {console.error(msg);} else {console.log(msg);}
-},	       emulGeoInfo={lat:55.337948, lon:86.145195};
-	       let geoInfo={lat:null, lon:null}; 
+},	       emulGeoInfo={lat:55.337948, lon:86.145195, town:''};
+	       let geoInfo={lat:null, lon:null, town:''}; 
 	if (emul) {
 		   msgSvr(`${modulName}returns emulated data:`);
 		   msgSvr(emulGeoInfo);

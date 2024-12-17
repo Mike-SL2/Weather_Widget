@@ -29,8 +29,8 @@ fetch(requestLine)
 	.then((result)=>{return result.json();})	
 	.then((data)=>{
 			// weather Report load success
-			msgSvr(`${modulName}load success. Data: \n${JSON.stringify(data)}`);
-			callBackFunction2(data);
+			msgSvr(`${modulName}load success. Data: \n${JSON.stringify({...data, town:geoData.town})}`);
+			callBackFunction2({...data, town:geoData.town});
 	})
 	.catch((e)=>{   
 			// weather Report load fail
